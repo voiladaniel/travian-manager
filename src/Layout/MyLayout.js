@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {Navigation} from './Navigation.js'
+import logo from '../Images/logo.png'
+
 export const MyLayout = (props) =>{
 
     const [expanded, setExpanded] = useState(false);
@@ -12,7 +14,7 @@ export const MyLayout = (props) =>{
             <Navigation onToggle={onToggle}/>
             <div className={expanded ? 'expanded' : 'not-expanded'}>
                 <header className='App-header'>
-                    Manager
+                    <img src={logo}></img>
                 </header>
                 <div className='App-body container-fluid wrapper'>
                     {props.children}
