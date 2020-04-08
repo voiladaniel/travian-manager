@@ -49,6 +49,17 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
               </Form.Group>
             </Form.Row>
             <Form.Row>
+              <Form.Group as={Col} controlId="artifactSpeed">
+                <Form.Label>Speed Artifact </Form.Label>
+                <Form.Control as="select" value={data.speedArtifact} name="speedArtifact" onChange={handleChange} >
+                  <option value="0">0</option>
+                  <option value="1.5x">1.5x</option>
+                  <option value="2x">2x</option>
+                  <option value="3x">3x</option>
+                </Form.Control>
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
               <Form.Group as={Col} controlId="tournamentSquare">
                 <Form.Label>Tournament Square </Form.Label>
                 <Form.Control as="select" value={data.tournamentSquare} name="tournamentSquare" onChange={handleChange}>

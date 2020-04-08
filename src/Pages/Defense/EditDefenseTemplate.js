@@ -47,7 +47,8 @@ export const EditDefenseTemplate = props => {
         notBeforeTime: "",
         troopSpeed: 0,
         tournamentSquare: 0,
-        AttackerID: 0
+        AttackerID: 0,
+        speedArtifact: 0
     });
 
     //#region APICAlls
@@ -185,6 +186,7 @@ export const EditDefenseTemplate = props => {
                     TournamentSquare: attackerData.tournamentSquare,
                     AttackerID: attackerData.AttackerID,
                     NotBeforeTime: attackerData.notBeforeTime,
+                    SpeedArtifact: attackerData.speedArtifact,
                     Account:{
                         Name : attackerName,
                         XCoord: attackerData.xCoord,
@@ -481,7 +483,8 @@ export const EditDefenseTemplate = props => {
             troopSpeed: 3,
             tournamentSquare: 0,
             AccountID: 0,
-            AttackerID: 0
+            AttackerID: 0,
+            speedArtifact: 0
         }))
         setAttackerName("");
         setIsShowingAttackerModal(true);
@@ -503,7 +506,7 @@ export const EditDefenseTemplate = props => {
     const openAttackerModal = (e) => {
         setIsNewAttacker(false);
         const { name, xCoord, yCoord, AccountID } = e.account;
-        const { notBeforeTime, troopSpeed, tournamentSquare, attackerID } = e;
+        const { notBeforeTime, troopSpeed, tournamentSquare, attackerID, speedArtifact } = e;
         setAttackerData(prev => ({
             ...prev,
             xCoord: xCoord,
@@ -512,9 +515,9 @@ export const EditDefenseTemplate = props => {
             troopSpeed: troopSpeed,
             tournamentSquare: tournamentSquare,
             AccountID: AccountID,
-            AttackerID: attackerID
+            AttackerID: attackerID,
+            speedArtifact: speedArtifact
         }))
-
         setAttackerName(name);
         setIsShowingAttackerModal(true);
     }
