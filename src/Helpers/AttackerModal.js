@@ -1,23 +1,37 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal, Button, Form, Col } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, name, data, isLoading }) => {
+export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, name, data, isLoading, newAttacker, deleteAttacker }) => {
   return (
     show ?
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Attacker: {name}</Modal.Title>
+          <Modal.Title>
+            <span className="highlight-attacker">Attacker: {name}</span>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={submitHandler}>
+            {newAttacker ?
+              <Form.Row>
+                <Form.Group as={Col} controlId="name">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control type="text" name="name" value={name} required onChange={handleChange} />
+                </Form.Group>
+              </Form.Row>
+              :
+              null
+            }
             <Form.Row>
               <Form.Group as={Col} controlId="xCoord">
                 <Form.Label>X coordinate</Form.Label>
-                <Form.Control type="text" name="xCoord" value={data.xCoord} required />
+                <Form.Control type="text" name="xCoord" value={data.xCoord} required onChange={newAttacker ? handleChange : () => { }} />
               </Form.Group>
               <Form.Group as={Col} controlId="yCoord">
                 <Form.Label>Y Coordinate</Form.Label>
-                <Form.Control type="text" name="yCoord" value={data.yCoord} required />
+                <Form.Control type="text" name="yCoord" value={data.yCoord} required onChange={newAttacker ? handleChange : () => { }} />
               </Form.Group>
             </Form.Row>
             <Form.Row>
@@ -26,6 +40,7 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 <Form.Control as="select" value={data.troopSpeed} name="troopSpeed" onChange={handleChange} >
                   <option>3</option>
                   <option>4</option>
+                  <option>4.5</option>
                   <option>5</option>
                   <option>6</option>
                   <option>7</option>
@@ -68,18 +83,32 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 <Form.Control type="text" name="notBeforeTime" value={data.notBeforeTime} onChange={handleChange} />
               </Form.Group>
             </Form.Row>
+            <Form.Row className="justifyCenter">
+              {!newAttacker ?
+                <FontAwesomeIcon icon={faTrashAlt} className="trash" onClick={() => deleteAttacker(data)} />
+                :
+                null
+              }
+            </Form.Row>
             <hr />
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-                </Button>
-            <Button variant="primary" type="submit"  disabled={isLoading}>
-              Update
-                </Button>
+            <Form.Row className="justifyCenter">
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              &nbsp;
+              <Button variant="primary" type="submit" disabled={isLoading}>
+                {newAttacker ?
+                  <>Add</>
+                  :
+                  <>Update</>
+                }
+              </Button>
+            </Form.Row>
             {isLoading &&
-              <>
-                <span>Loading...</span><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-              </>
-            }
+                <>
+                  <span>Loading...</span><img alt="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                </>
+              }
           </Form>
         </Modal.Body>
       </Modal>

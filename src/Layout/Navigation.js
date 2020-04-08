@@ -2,7 +2,7 @@ import React from 'react';
 import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faShieldAlt, faUser, faBolt } from '@fortawesome/free-solid-svg-icons'
 
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
@@ -53,7 +53,7 @@ export const Navigation = (props) =>{
                     </NavItem>
                     <NavItem eventKey="Attack">
                         <NavIcon>
-                            <FontAwesomeIcon icon={faHome}/>
+                            <FontAwesomeIcon icon={faBolt}/>
                         </NavIcon>
                         <NavText>
                             Attack
@@ -61,7 +61,7 @@ export const Navigation = (props) =>{
                     </NavItem>
                     <NavItem eventKey="Accounts">
                         <NavIcon>
-                            <FontAwesomeIcon icon={faHome}/>
+                            <FontAwesomeIcon icon={faUser}/>
                         </NavIcon>
                         <NavText>
                             Accounts

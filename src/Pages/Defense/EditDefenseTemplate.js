@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { DefenderModal } from '../../Helpers/DefenderModal.js'
 import { AttackerModal } from '../../Helpers/AttackerModal.js'
-import { useAttackerModal } from '../../Helpers/useAttackerModal.js'
+import { SettingsModal } from '../../Helpers/SettingsModal.js'
 import { useTemplateService } from '../../Helpers/useTemplateService.js'
 import { config } from '../../Helpers/config.js';
 import { DefenderDiv } from '../../Helpers/DefenderDiv.js'
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faWrench, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
     const [atteckersParam, setAtteckersParam] = useState({
@@ -33,6 +33,11 @@ export const EditDefenseTemplate = props => {
         arrivalTime: "",
         xCoord: "",
         yCoord: "",
+        realName: ""
+    });
+    const [settingsData, setSettingsData] = useState({
+        settingsdID: 0,
+        timeInterval: ""
     });
     const [defenders, setDefenders] = useState([]);
     const [attackerName, setAttackerName] = useState();
@@ -47,7 +52,49 @@ export const EditDefenseTemplate = props => {
 
     //#region APICAlls
 
+    const getSettings = (url, method) => {
+        setIsLoadingSettings(true);
+        try {
+            const options = {
+                method: 'GET',
+                headers: { "Content-Type": "application/json" },
+                params: {
+                    TemplateID: 1,
+                },
+                url: url + method
+            }
+            const result = axios(options)
+                .then(function (response) {
+                    setIsLoadingSettings(false);
+                    setSettingsData({
+                        settingsdID : response.data.settingID,
+                        timeInterval : response.data.timeInterval
+                    })
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status == 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     const getDefenders = (url, method) => {
+        setIsLoadingDefenders(true);
         try {
             const options = {
                 method: 'GET',
@@ -57,7 +104,52 @@ export const EditDefenseTemplate = props => {
             }
             const result = axios(options)
                 .then(function (response) {
+                    setIsLoadingDefenders(false);
                     setDefenders(response.data);
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status == 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const updateSettings = (url, method) => {
+        setIsLoadingSettingsModal(true);
+        try {
+            const options = {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                data: {
+                    TemplateId: 1,
+                    TimeInterval: settingsData.timeInterval,
+                    SettingID: settingsData.settingsdID
+                },
+                url: url + method
+            }
+            const result = axios(options)
+                .then(function (response) {
+                    setIsLoadingSettingsModal(false);
+                    setIsShowingSettingsModal(false);
+                    setAtteckersParam(prevState => ({
+                        ...prevState,
+                        Refresh: Math.random()
+                    }));
                 })
                 .catch(function (error) {
                     if (!error.status) {
@@ -92,7 +184,13 @@ export const EditDefenseTemplate = props => {
                     TroopSpeed: attackerData.troopSpeed,
                     TournamentSquare: attackerData.tournamentSquare,
                     AttackerID: attackerData.AttackerID,
-                    NotBeforeTime : attackerData.notBeforeTime
+                    NotBeforeTime: attackerData.notBeforeTime,
+                    Account:{
+                        Name : attackerName,
+                        XCoord: attackerData.xCoord,
+                        YCoord: attackerData.yCoord,
+                        AccountType: 1
+                    }
                 },
                 url: url + method
             }
@@ -137,7 +235,13 @@ export const EditDefenseTemplate = props => {
                     TemplateId: 1,
                     ArrivingTime: defenderData.arrivalTime,
                     AttackerID: attackerData.AttackerID,
-                    AccountID: defenderData.name
+                    AccountID: defenderData.name,
+                    Account:{
+                        Name : defenderData.realName,
+                        XCoord: defenderData.xCoord,
+                        YCoord: defenderData.yCoord,
+                        AccountType: 0
+                    }
                 },
                 url: url + method
             }
@@ -218,31 +322,88 @@ export const EditDefenseTemplate = props => {
         }
     };
 
+    const deleteAttackerFromDB = (url, method, attackerId) => {
+        try {
+            const options = {
+                method: 'GET',
+                headers: { "Content-Type": "application/json" },
+                params: {
+                    AttackerID: attackerId
+                },
+                url: url + method
+            }
+            axios(options)
+                .then(function (response) {
+                    setIsDeletingAttacker(false);
+                    setAtteckersParam(prevState => ({
+                        ...prevState,
+                        Refresh: Math.random()
+                    }));
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status === 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     //#endregion
 
     //#region Modal
     const [isShowingDeffenderModal, setIsShowingDeffenderModal] = useState(false);
     const [isLoadingDeffenderModal, setIsLoadingDeffenderModal] = useState(false);
+    const [isLoadingDefenders, setIsLoadingDefenders] = useState(false);
+    const [isLoadingSettings, setIsLoadingSettings] = useState(false);
     const [isShowingAttackerModal, setIsShowingAttackerModal] = useState(false);
     const [isLoadingAttackerModal, setIsLoadingAttackerModal] = useState(false);
+    const [isLoadingSettingsModal, setIsLoadingSettingsModal] = useState(false);
+    const [isShowingSettingsModal, setIsShowingSettingsModal] = useState(false);
+    const [isNewAttacker, setIsNewAttacker] = useState(false);
+    const [isNewDefender, setIsNewDefender] = useState(false);
+    const [isDeletingAttacker, setIsDeletingAttacker] = useState(false);
 
     function closeDefenderModal() {
         setIsShowingDeffenderModal(!isShowingDeffenderModal);
+        setIsNewDefender(false);
     }
 
     function closeAttackerModal() {
         setIsShowingAttackerModal(!isShowingAttackerModal);
     }
+
+    function closeSettingsModal(){
+        setIsShowingSettingsModal(!isShowingSettingsModal);
+    }
+
     const handleChangeDefenderModal = (e) => {
         const { name, value } = e.target;
-
-        if (name === "name") {
-            let defender = defenders.filter(x => x.accountID === parseInt(value));
-            setDefenderData(prevState => ({
-                ...prevState,
-                xCoord: defender[0].xCoord,
-                yCoord: defender[0].yCoord
-            }));
+        if(isNewDefender){
+            
+        }
+        else{
+            if (name === "name") {
+                let defender = defenders.filter(x => x.accountID === parseInt(value));
+                setDefenderData(prevState => ({
+                    ...prevState,
+                    xCoord: defender[0].xCoord,
+                    yCoord: defender[0].yCoord
+                }));
+            }
         }
         setDefenderData(prevState => ({
             ...prevState,
@@ -252,10 +413,26 @@ export const EditDefenseTemplate = props => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if(name === "name"){
+            setAttackerName(value);
+        }
         setAttackerData(prevState => ({
             ...prevState,
             [name]: value
         }));
+    };
+
+    const handleChangeSettingsModal = (e) => {
+        const { name, value } = e.target;
+        setSettingsData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    const handleSubmitSettings = async (e) => {
+        e.preventDefault();
+        updateSettings(config.templateAPI, "UpdateSettings");
     };
 
     const handleSubmitAttacker = async (e) => {
@@ -275,6 +452,7 @@ export const EditDefenseTemplate = props => {
     };
 
     const openDefenderModal = (e) => {
+        setIsNewDefender(false);
         const { name } = e.account;
         const { attackerID } = e;
         getDefenders(config.templateAPI, "GetDefenders");
@@ -283,10 +461,47 @@ export const EditDefenseTemplate = props => {
             ...prevState,
             AttackerID: attackerID
         }));
+        setDefenderData(prev => ({
+            ...prev,
+            xCoord: "",
+            yCoord: "",
+            name: 0,
+            arrivalTime: ""
+        }))
         setAttackerName(name);
     }
 
+    const openNewAttackerModal = (e) => {
+        setIsNewAttacker(true);
+        setAttackerData(prev => ({
+            ...prev,
+            xCoord: "",
+            yCoord: "",
+            notBeforeTime: "",
+            troopSpeed: 3,
+            tournamentSquare: 0,
+            AccountID: 0,
+            AttackerID: 0
+        }))
+        setAttackerName("");
+        setIsShowingAttackerModal(true);
+    }
+
+    const openNewDefenderModal = (e) => {
+        setIsNewDefender(true);
+        setDefenderData(prev => ({
+             ...prev,
+             xCoord: "",
+             yCoord: "",        
+             name: 0,
+             realName: "",
+             arrivalTime: "",
+         }))
+        setIsShowingDeffenderModal(true);
+    }
+
     const openAttackerModal = (e) => {
+        setIsNewAttacker(false);
         const { name, xCoord, yCoord, AccountID } = e.account;
         const { notBeforeTime, troopSpeed, tournamentSquare, attackerID } = e;
         setAttackerData(prev => ({
@@ -303,6 +518,11 @@ export const EditDefenseTemplate = props => {
         setAttackerName(name);
         setIsShowingAttackerModal(true);
     }
+
+    const openSettingsModal = (e) => {
+        getSettings(config.templateAPI, "GetSettings");
+        setIsShowingSettingsModal(true);
+    }
     //#endregion
 
     //link parmeters
@@ -316,6 +536,14 @@ export const EditDefenseTemplate = props => {
     const deleteDefender = (e) => {
         const { defenderID, attackerID } = e;
         deleteDefenderFromDB(config.templateAPI, "DeleteDefender", defenderID, attackerID);
+    }
+
+        //delete defender
+    const deleteAttacker = (e) => {
+        const {AttackerID} = e;
+        deleteAttackerFromDB(config.templateAPI, "DeleteAttacker", AttackerID);
+        setIsShowingAttackerModal(false);
+        setIsDeletingAttacker(true);
     }
 
     //load data
@@ -337,25 +565,52 @@ export const EditDefenseTemplate = props => {
                     defenderData={defenderData}
                     defenders={defenders}
                     handleChange={handleChangeDefenderModal}
-                    isLoading={isLoadingDeffenderModal} />
-                <AttackerModal show={isShowingAttackerModal} 
-                handleClose={closeAttackerModal} 
-                submitHandler={handleSubmitAttacker}
-                name={attackerName} data={attackerData} 
-                handleChange={handleChange} 
-                isLoading ={isLoadingAttackerModal}/>
+                    isLoading={isLoadingDeffenderModal}
+                    newDefender={isNewDefender}
+                    isLoadingDefenders={isLoadingDefenders} />
+
+                <AttackerModal show={isShowingAttackerModal}
+                    handleClose={closeAttackerModal}
+                    submitHandler={handleSubmitAttacker}
+                    name={attackerName} 
+                    data={attackerData}
+                    handleChange={handleChange}
+                    isLoading={isLoadingAttackerModal} 
+                    newAttacker={isNewAttacker}
+                    deleteAttacker={deleteAttacker}/>
+
+                <SettingsModal show={isShowingSettingsModal}
+                    data ={settingsData} 
+                    handleClose={closeSettingsModal}
+                    handleChange={handleChangeSettingsModal}
+                    submitHandler={handleSubmitSettings}
+                    isLoadingSettings={isLoadingSettings}
+                    isLoading ={isLoadingSettingsModal} />
+
                 <div className="row">
                     <h3>Template: ro2020</h3>
                 </div>
                 <div className="row">
-                    <Button variant="secondary" onClick={true}>
-                        <FontAwesomeIcon icon={faPlus} />
+                    <Button variant="secondary" onClick={openNewAttackerModal} disabled={isLoading}>
+                        <FontAwesomeIcon icon={faBolt} />
                         &nbsp;
                         New attacker
                     </Button>
+                    &nbsp;
+                    <Button variant="secondary" onClick={openNewDefenderModal} disabled={isLoading}>
+                        <FontAwesomeIcon icon={faShieldAlt} />
+                        &nbsp;
+                        New defender
+                    </Button>
+                    &nbsp;
+                    <Button variant="secondary" onClick={openSettingsModal} disabled={isLoading}>
+                        <FontAwesomeIcon icon={faWrench} />
+                        &nbsp;
+                        Settings
+                    </Button>
                 </div>
                 <div className="row">
-                    {!isLoading && attackers.length ?
+                    {!isLoading && attackers.length && !isDeletingAttacker?
                         attackers.map(item => (
                             <div className="col-lg-3 col-md-6 text-center attacker-div-template" key={item.accountID}>
                                 <div className="attacker-name" onClick={() => openAttackerModal(item)}>

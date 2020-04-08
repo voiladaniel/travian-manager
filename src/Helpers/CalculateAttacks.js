@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import axios from "axios";
-import { config } from '../Helpers/config.js';
 
 export const CalculateAttacks = ({ defenders, deleteDefender }) => {
     return (

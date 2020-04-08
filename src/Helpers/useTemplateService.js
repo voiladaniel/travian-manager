@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import axios from "axios";
 
 export function useTemplateService (url, body){
@@ -17,7 +17,7 @@ export function useTemplateService (url, body){
                         params: body,
                         url: url + method
                     }
-                    const result = await axios(options)
+                    await axios(options)
                     .then(function (response) {
                         setAttackers(response.data);
                         setError(null);
@@ -27,7 +27,7 @@ export function useTemplateService (url, body){
                         if (!error.status) {
                             try{
                                 const {status} = error.response;
-                                if(status == 401)
+                                if(status === 401)
                                      error.message = 'Unauthorized access! Please contact the Administrator!'
                             }
                             catch{

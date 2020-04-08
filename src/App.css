@@ -113,6 +113,19 @@ th:last-child {
 .defenders-table th{
   padding: 3px;
 }
+.trash{
+  background: transparent;
+  font-size: 17px;
+  cursor: pointer;
+  color: #dc3545;
+}
+.highlight-attacker{
+  background: #ffc107;
+  border-radius: 5px;
+}
+.justifyCenter{
+  justify-content: center;
+}
 .defenders-table td:last-child{
   background: #6986ab;
   font-size: 12px;
@@ -130,6 +143,9 @@ th:last-child {
 }
 .defenders-name{
   color:#ffc107;
+}
+.width-full{
+  width: 100%;
 }
 .add-new-defender{
   background: transparent;

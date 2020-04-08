@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
-import { useHistory,useLocation  } from 'react-router-dom';
+import { faShieldAlt } from '@fortawesome/free-solid-svg-icons'
+import { useHistory  } from 'react-router-dom';
 
 export const Defense = () => {
     const history = useHistory();

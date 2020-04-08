@@ -1,10 +1,9 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import axios from "axios";
 
 export function useUserService (url, body){
     
     const [errorLogin, setError] = useState(null);
-    const [access, setAccess] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const login = async () => {
@@ -18,7 +17,7 @@ export function useUserService (url, body){
                         data: body,
                         url: url
                     }
-                    const result = await axios(options)
+                    await axios(options)
                     .then(function (response) {
                         authorized = true;
                         setError(null);
@@ -32,7 +31,7 @@ export function useUserService (url, body){
                         if (!error.status) {
                             try{
                                 const {status} = error.response;
-                                if(status == 401)
+                                if(status === 401)
                                      error.message = 'Unauthorized access! Please contact the Administrator!'
                             }
                             catch{
