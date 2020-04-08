@@ -40,7 +40,6 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 <Form.Control as="select" value={data.troopSpeed} name="troopSpeed" onChange={handleChange} >
                   <option>3</option>
                   <option>4</option>
-                  <option>4.5</option>
                   <option>5</option>
                   <option>6</option>
                   <option>7</option>
