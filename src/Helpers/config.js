@@ -1,4 +1,4 @@
 export const config = {
-    accountAPI: 'https://travianmanager.azurewebsites.net/api/Account/Login',
-    templateAPI: 'https://travianmanager.azurewebsites.net/api/Template/'
+    accountAPI: 'https://myapi-env.eba-ukdeavx8.us-east-2.elasticbeanstalk.com/api/Account/Login',
+    templateAPI: 'https://myapi-env.eba-ukdeavx8.us-east-2.elasticbeanstalk.com/api/Template/'
 };
