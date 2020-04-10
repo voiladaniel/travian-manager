@@ -1,4 +1,4 @@
 export const config = {
-    accountAPI: 'https://travianmanager.azurewebsites.net/api/Account/Login',
-    templateAPI: 'https://travianmanager.azurewebsites.net/api/Template/'
+    accountAPI: 'https://myapi.vdstuff.com/api/Account/Login',
+    templateAPI: 'https://myapi.vdstuff.com/api/Template/'
 };
