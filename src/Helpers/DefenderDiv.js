@@ -14,10 +14,10 @@ export const DefenderDiv = ({ item, isLoadingCustom, deleteDefender }) => {
                                 </th>
                                 <th>
                                     Ora sosire
-                    </th>
+                                </th>
                                 <th>
                                     Ora Plecare
-                    </th>
+                                </th>
                             </tr>
                         </thead>
 

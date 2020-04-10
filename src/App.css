@@ -87,6 +87,30 @@ html, body, #root {
   text-align: center !important;
   width: 100% !important;;
 }
+.spies-table{
+  width:100%;
+  margin-top: 5px;
+}
+.spies-table thead{
+  background: #ffc107;
+  color: #2f323b;
+}
+.spies-table tbody{
+  background: #848484;
+}
+.spies-div-table{
+  padding-bottom: 45px;
+}
+.spies-div{
+  display: flex;
+  justify-content: center;
+}
+.spies-div-padding{
+  padding: 15px;
+}
+.spies-table th{
+  padding: 3px;
+}
 .defenders-table{
   width:100%;
   margin-top: 5px;
@@ -114,6 +138,9 @@ th:last-child {
 .defenders-table th{
   padding: 3px;
 }
+.border-row{
+  border-bottom: 1px solid #2f323b;
+}
 .trash{
   background: transparent;
   font-size: 17px;
@@ -132,6 +159,9 @@ th:last-child {
   font-size: 12px;
   cursor: pointer;
 }
+.spies-table tr:last-child{
+  border-bottom: none !important;
+}
 .attacker-name{
   background: #2f323b;
   border-radius: 5px;
@@ -149,17 +179,12 @@ th:last-child {
   width: 100%;
 }
 .add-new-defender{
-  background: transparent;
-  border: 1px solid #ffc107;
   bottom: 0;
   margin-bottom: 5px;
   position: absolute;
-  border-radius: 5px;
   padding: 5px;
   cursor: pointer;
-}
-.add-new-defender:hover{
-  background: #4a4b4c;
+  margin-left: 0px !important;
 }
 .Login-form{
   border: 1px solid grey;

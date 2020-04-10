@@ -3,12 +3,13 @@ import { Button } from 'react-bootstrap'
 import { DefenderModal } from '../../Helpers/DefenderModal.js'
 import { AttackerModal } from '../../Helpers/AttackerModal.js'
 import { SettingsModal } from '../../Helpers/SettingsModal.js'
+import { SpyModal } from '../../Helpers/SpyModal.js'
 import { useTemplateService } from '../../Helpers/useTemplateService.js'
 import { config } from '../../Helpers/config.js';
 import { DefenderDiv } from '../../Helpers/DefenderDiv.js'
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faWrench, faShieldAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
     const [atteckersParam, setAtteckersParam] = useState({
@@ -33,7 +34,9 @@ export const EditDefenseTemplate = props => {
         arrivalTime: "",
         xCoord: "",
         yCoord: "",
-        realName: ""
+        realName: "",
+        spySpeed: 9,
+        tournamentSquare: 0
     });
     const [settingsData, setSettingsData] = useState({
         settingsdID: 0,
@@ -48,7 +51,8 @@ export const EditDefenseTemplate = props => {
         troopSpeed: 0,
         tournamentSquare: 0,
         AttackerID: 0,
-        speedArtifact: 0
+        speedArtifact: 0,
+        defender: []
     });
 
     //#region APICAlls
@@ -68,8 +72,8 @@ export const EditDefenseTemplate = props => {
                 .then(function (response) {
                     setIsLoadingSettings(false);
                     setSettingsData({
-                        settingsdID : response.data.settingID,
-                        timeInterval : response.data.timeInterval
+                        settingsdID: response.data.settingID,
+                        timeInterval: response.data.timeInterval
                     })
                 })
                 .catch(function (error) {
@@ -187,8 +191,8 @@ export const EditDefenseTemplate = props => {
                     AttackerID: attackerData.AttackerID,
                     NotBeforeTime: attackerData.notBeforeTime,
                     SpeedArtifact: attackerData.speedArtifact,
-                    Account:{
-                        Name : attackerName,
+                    Account: {
+                        Name: attackerName,
                         XCoord: attackerData.xCoord,
                         YCoord: attackerData.yCoord,
                         AccountType: 1
@@ -238,8 +242,8 @@ export const EditDefenseTemplate = props => {
                     ArrivingTime: defenderData.arrivalTime,
                     AttackerID: attackerData.AttackerID,
                     AccountID: defenderData.name,
-                    Account:{
-                        Name : defenderData.realName,
+                    Account: {
+                        Name: defenderData.realName,
                         XCoord: defenderData.xCoord,
                         YCoord: defenderData.yCoord,
                         AccountType: 0
@@ -282,6 +286,51 @@ export const EditDefenseTemplate = props => {
         }
     };
 
+    const getAttackerSpies = async (url, method, attackerId, spyID) => {
+        setIsLoadingSpyModal(true);
+        try {
+            const options = {
+                method: 'GET',
+                headers: { "Content-Type": "application/json" },
+                params: {
+                    AttackerID: attackerId,
+                    SpyID: spyID,
+                    TroopSpeed : defenderData.spySpeed,
+                    TournamentSquare : defenderData.tournamentSquare
+                },
+                url: url + method
+            }
+            const result = await axios(options)
+                .then(function (response) {
+                    setAttackerData(prevState => ({
+                        ...prevState,
+                        name: response.data.account.name,
+                        defender: response.data.defender
+                    }));
+                    setIsLoadingSpyModal(false);
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status == 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     const deleteDefenderFromDB = (url, method, defenderId, attackerId) => {
         setIsLoadingCustom(true);
         try {
@@ -301,6 +350,49 @@ export const EditDefenseTemplate = props => {
                         Refresh: Math.random()
                     }));
                     setIsLoadingCustom(false);
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status == 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const deleteDefendersFromDB = (url, method, attackerId) => {
+        setIsLoadingDeleteDefenders(true);
+        setIsLoadingCustom(true);
+        try {
+            const options = {
+                method: 'GET',
+                headers: { "Content-Type": "application/json" },
+                params: {
+                    AttackerID: attackerId
+                },
+                url: url + method
+            }
+            axios(options)
+                .then(function (response) {
+                    setAtteckersParam(prevState => ({
+                        ...prevState,
+                        Refresh: Math.random()
+                    }));
+                    setIsLoadingCustom(false);
+                    setIsLoadingDeleteDefenders(false);
                 })
                 .catch(function (error) {
                     if (!error.status) {
@@ -378,6 +470,9 @@ export const EditDefenseTemplate = props => {
     const [isNewAttacker, setIsNewAttacker] = useState(false);
     const [isNewDefender, setIsNewDefender] = useState(false);
     const [isDeletingAttacker, setIsDeletingAttacker] = useState(false);
+    const [isLoadingDeleteDefenders, setIsLoadingDeleteDefenders] = useState(false);
+    const [isShowingSpyModal, setIsShowingSpyModal] = useState(false);
+    const [isLoadingSpyModal, setIsLoadingSpyModal] = useState(false);
 
     function closeDefenderModal() {
         setIsShowingDeffenderModal(!isShowingDeffenderModal);
@@ -388,16 +483,20 @@ export const EditDefenseTemplate = props => {
         setIsShowingAttackerModal(!isShowingAttackerModal);
     }
 
-    function closeSettingsModal(){
+    function closeSettingsModal() {
         setIsShowingSettingsModal(!isShowingSettingsModal);
+    }
+
+    function closeSpyModal() {
+        setIsShowingSpyModal(!isShowingSpyModal);
     }
 
     const handleChangeDefenderModal = (e) => {
         const { name, value } = e.target;
-        if(isNewDefender){
-            
+        if (isNewDefender) {
+
         }
-        else{
+        else {
             if (name === "name") {
                 let defender = defenders.filter(x => x.accountID === parseInt(value));
                 setDefenderData(prevState => ({
@@ -413,9 +512,28 @@ export const EditDefenseTemplate = props => {
         }));
     };
 
+    const handleChangeSpyTroop = (e) => {
+        const { name, value } = e.target;
+
+        setDefenderData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleChangeSpyModal = (e) => {
+        const { name, value } = e.target;
+
+        setDefenderData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+        getAttackerSpies(config.templateAPI, "GetSpies", attackerData.AttackerID, value);
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if(name === "name"){
+        if (name === "name") {
             setAttackerName(value);
         }
         setAttackerData(prevState => ({
@@ -493,13 +611,13 @@ export const EditDefenseTemplate = props => {
     const openNewDefenderModal = (e) => {
         setIsNewDefender(true);
         setDefenderData(prev => ({
-             ...prev,
-             xCoord: "",
-             yCoord: "",        
-             name: 0,
-             realName: "",
-             arrivalTime: "",
-         }))
+            ...prev,
+            xCoord: "",
+            yCoord: "",
+            name: 0,
+            realName: "",
+            arrivalTime: "",
+        }))
         setIsShowingDeffenderModal(true);
     }
 
@@ -526,6 +644,27 @@ export const EditDefenseTemplate = props => {
         getSettings(config.templateAPI, "GetSettings");
         setIsShowingSettingsModal(true);
     }
+
+    const openSpyModal = (e) => {
+        const { attackerID } = e;
+        getDefenders(config.templateAPI, "GetDefenders");
+        setAttackerData(prev => ({
+            ...prev,
+            AttackerID: attackerID
+        }))
+        setDefenderData(prev => ({
+            ...prev,
+            xCoord: "",
+            yCoord: "",
+            name: 0,
+            arrivalTime: ""
+        }))
+        setAttackerData(prevState => ({
+            ...prevState,
+            defender: ""
+        }));
+        setIsShowingSpyModal(true);
+    }
     //#endregion
 
     //link parmeters
@@ -541,9 +680,15 @@ export const EditDefenseTemplate = props => {
         deleteDefenderFromDB(config.templateAPI, "DeleteDefender", defenderID, attackerID);
     }
 
-        //delete defender
+    //delete defenders
+    const deleteDefenders = (e) => {
+        const { attackerID } = e;
+        deleteDefendersFromDB(config.templateAPI, "DeleteDefenders", attackerID);
+    }
+
+    //delete defender
     const deleteAttacker = (e) => {
-        const {AttackerID} = e;
+        const { AttackerID } = e;
         deleteAttackerFromDB(config.templateAPI, "DeleteAttacker", AttackerID);
         setIsShowingAttackerModal(false);
         setIsDeletingAttacker(true);
@@ -575,20 +720,30 @@ export const EditDefenseTemplate = props => {
                 <AttackerModal show={isShowingAttackerModal}
                     handleClose={closeAttackerModal}
                     submitHandler={handleSubmitAttacker}
-                    name={attackerName} 
+                    name={attackerName}
                     data={attackerData}
                     handleChange={handleChange}
-                    isLoading={isLoadingAttackerModal} 
+                    isLoading={isLoadingAttackerModal}
                     newAttacker={isNewAttacker}
-                    deleteAttacker={deleteAttacker}/>
+                    deleteAttacker={deleteAttacker} />
 
                 <SettingsModal show={isShowingSettingsModal}
-                    data ={settingsData} 
+                    data={settingsData}
                     handleClose={closeSettingsModal}
                     handleChange={handleChangeSettingsModal}
                     submitHandler={handleSubmitSettings}
                     isLoadingSettings={isLoadingSettings}
-                    isLoading ={isLoadingSettingsModal} />
+                    isLoading={isLoadingSettingsModal} />
+
+                <SpyModal show={isShowingSpyModal}
+                    handleClose={closeSpyModal}
+                    attackerData={attackerData}
+                    defenders={defenders}
+                    defenderData={defenderData}
+                    isLoadingSpies={isLoadingSpyModal}
+                    isLoadingDefenders={isLoadingDefenders}
+                    handleChange={handleChangeSpyModal}
+                    handleChangeSpyTroop={handleChangeSpyTroop} />
 
                 <div className="row">
                     <h3>Template: ro2020</h3>
@@ -613,7 +768,7 @@ export const EditDefenseTemplate = props => {
                     </Button>
                 </div>
                 <div className="row">
-                    {!isLoading && attackers.length && !isDeletingAttacker?
+                    {!isLoading && attackers.length && !isDeletingAttacker ?
                         attackers.map(item => (
                             <div className="col-lg-3 col-md-6 text-center attacker-div-template" key={item.accountID}>
                                 <div className="attacker-name" onClick={() => openAttackerModal(item)}>
@@ -621,8 +776,34 @@ export const EditDefenseTemplate = props => {
                                 </div>
                                 <div className="text-center defenders-div">
                                     <DefenderDiv isLoadingCustom={isLoadingCustom} item={item} deleteDefender={deleteDefender} />
-                                    <div className="row add-new-defender" onClick={() => openDefenderModal(item)}>
-                                        Add new
+                                    <div>
+
+                                    </div>
+                                    <div className="row add-new-defender">
+                                        <Button variant="secondary" onClick={() => openDefenderModal(item)}>
+                                            <FontAwesomeIcon icon={faShieldAlt} />
+                                            &nbsp;
+                                            Add new
+                                        </Button>
+                                        &nbsp;
+                                        {!item.defender.length ? null :
+                                            <>
+                                                <Button variant="secondary" onClick={() => deleteDefenders(item)} disabled={isLoadingDeleteDefenders}>
+                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                    &nbsp;
+                                                    Clear
+                                                </Button>
+                                                &nbsp;
+                                            </>}
+                                        {!item.defender.length ? null :
+                                            <>
+                                                <Button variant="secondary" onClick={() => openSpyModal(item)} disabled={isLoadingSpyModal}>
+                                                    <FontAwesomeIcon icon={faUserSecret} />
+                                                    &nbsp;
+                                                    Spy
+                                                </Button>
+                                                &nbsp;
+                                            </>}
                                     </div>
                                 </div>
                             </div>

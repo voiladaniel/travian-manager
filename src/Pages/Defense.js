@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShieldAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBookOpen } from '@fortawesome/free-solid-svg-icons'
 import { useHistory  } from 'react-router-dom';
 
 export const Defense = () => {
@@ -17,11 +17,11 @@ export const Defense = () => {
                         <div className="view-header">
                             <div className="header-title">
                                 <h3>
-                                    <FontAwesomeIcon icon={faShieldAlt}/> 
-                                     Defense planner
+                                    <FontAwesomeIcon icon={faBookOpen}/> 
+                                    &nbsp; Attack & Defense planner
                                 </h3>
                                 <small>
-                                    List of all contacts
+                                    Travian
                                 </small>
                             </div>
                         </div>
