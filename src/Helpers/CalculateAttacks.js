@@ -6,7 +6,9 @@ export const CalculateAttacks = ({ defenders, deleteDefender }) => {
     return (
         <>
             {defenders.defender.length ?
-                defenders.defender.map(defender => (
+                defenders.defender
+                .sort((a, b) => a.attackingTime > b.attackingTime)
+                .map(defender => (
                     <tr key={defender.defenderID}>
                         <td>
                             {defender.account.name}

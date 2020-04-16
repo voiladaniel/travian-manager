@@ -17,6 +17,10 @@ html, body, #root {
   background: #2f323b;
 }
 
+.Not-catas{
+  background: #FF7256;
+  border-radius: 5px;
+}
 .Real{
   background: #dc3545;
   border-radius: 5px;
