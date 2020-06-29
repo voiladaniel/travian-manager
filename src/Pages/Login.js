@@ -35,7 +35,7 @@ export const Login = (props) => {
         <>
             <div className="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-md-offset-3 Login-form">
                 <center>
-                    <h2>Login</h2>
+                    <h2>Login 1</h2>
                 </center>
                 <form name="form" onSubmit={handleSubmit}>
                     <div className={'form-group' + (submitted && !state.Username ? ' has-error' : '')}>
