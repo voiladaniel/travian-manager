@@ -15,7 +15,7 @@ export function useUserService (url, body){
                         method: 'POST',
                         headers: { 'content-type': 'application/json' },
                         data: body,
-                        url: url
+                        url: url + "Login"
                     }
                     await axios(options)
                     .then(function (response) {

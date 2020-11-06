@@ -9,6 +9,7 @@ import { config } from '../../Helpers/config.js';
 import { DefenderDiv } from '../../Helpers/DefenderDiv.js'
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import img_attacker from '../../Images/img_attacker.png'
 import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
@@ -772,7 +773,7 @@ export const EditDefenseTemplate = props => {
                         attackers.map(item => (
                             <div className="col-lg-3 col-md-6 text-center attacker-div-template" key={item.accountID}>
                                 <div className="attacker-name" onClick={() => openAttackerModal(item)}>
-                                    {item.account.name}
+                                <img src={img_attacker} className="w3-bar-item w3-circle w3-hide-small customIconAttacker"/> {item.account.name}
                                 </div>
                                 <div className="text-center defenders-div">
                                     <DefenderDiv isLoadingCustom={isLoadingCustom} item={item} deleteDefender={deleteDefender} />
@@ -807,7 +808,7 @@ export const EditDefenseTemplate = props => {
                                     </div>
                                 </div>
                             </div>
-                        )) : !attackers.length ? 
+                        )) : !attackers.length && !isLoading ? 
                             <div>
                                 No Data!
                             </div> 

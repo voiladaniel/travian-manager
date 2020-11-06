@@ -61,7 +61,7 @@ export const Navigation = (props) =>{
                     </NavItem> */}
                     <NavItem eventKey="Accounts">
                         <NavIcon>
-                            <FontAwesomeIcon icon={faUser}/>
+                            <FontAwesomeIcon icon={faShieldAlt}/>
                         </NavIcon>
                         <NavText>
                             Accounts

@@ -1,13 +1,19 @@
 import React from 'react'
 import { Modal, Button, Form, Col } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-export const DefenderModal = ({ show, handleClose, handleChange, submitHandler, name, defenders, defenderData, isLoading, isLoadingDefenders, newDefender }) => {
+export const DefenderModal = ({ 
+  show, handleClose, handleChange, submitHandler, name, defenders, defenderData, isLoading, isLoadingDefenders, newDefender, editDefender, deleteDefender }) => {
   return (
     show ?
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <span className="highlight-attacker">Add new defender{!newDefender ? <> for: {name} </> : null} </span>
+            {editDefender ? 
+              <span className="highlight-attacker">Edit defender: {defenderData.realName}</span> 
+              : <span className="highlight-attacker">Add new defender{!newDefender ? <> for: {name} </> : null} </span>
+            }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -57,6 +63,18 @@ export const DefenderModal = ({ show, handleClose, handleChange, submitHandler, 
                   <Form.Control type="text" name="yCoord" value={defenderData.yCoord} onChange={newDefender ? handleChange : () => { }} />
                 </Form.Group>
               </Form.Row>
+              {editDefender ?
+                <>
+                  <Form.Row className="justifyCenter">
+                    <FontAwesomeIcon icon={faTrashAlt} className="trash" onClick={() => deleteDefender(defenderData)} />
+                  </Form.Row>
+                  <Form.Row className="justifyCenter">
+                    <span className="customCenterTrashAndcomment">The delete function will delete all the data for this defender!</span>
+                  </Form.Row>
+                </>
+                :
+                null
+              }
               <hr />
               <Form.Row className="justifyCenter">
                 <Button variant="secondary" onClick={handleClose}>
@@ -64,7 +82,7 @@ export const DefenderModal = ({ show, handleClose, handleChange, submitHandler, 
                 </Button>
                 &nbsp;
                 <Button variant="primary" type="submit" disabled={isLoading}>
-                  Add
+                  {!editDefender ? <>Add</> : <>Update</>}
                 </Button>
 
               </Form.Row>
