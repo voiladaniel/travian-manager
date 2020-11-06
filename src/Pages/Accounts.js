@@ -229,10 +229,10 @@ export const Accounts = () => {
                 <ul className="w3-ul w3-card w3-hoverable width-100">
                     {!isLoading && attackers.length ?
                         attackers.map(item => (
-                            <li className="w3-bar use-pointer defenderName" key={item.accountID} onClick={() => openDefenderModal(item)}>
+                            <li className="w3-bar use-pointer" key={item.accountID} onClick={() => openDefenderModal(item)}>
                                 <img src={img_defender} className="w3-bar-item w3-circle w3-hide-small customIconDefender"/>
                                 <div className="w3-bar-item">
-                                    <span className="w3-large">{item.name}</span>
+                                    <span className="w3-large defenderName">{item.name}</span>
                                     <br />
                                     <span className="spanSmaller">Defender</span>
                                 </div>

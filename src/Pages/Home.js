@@ -9,6 +9,9 @@ export const Home = () => {
             <div className="col-lg-12 col-md-12 col-sm-12 text-center">
                 <img src={travian} className="img-fluid rounded"/>
             </div>
+            <div className="col-lg-12 col-md-12 col-sm-12 text-center font10">
+                Developed by Daniel. All rights reserved. Contact: voiladaniel@yahoo.com.
+            </div>
         </div>
            
         </>
