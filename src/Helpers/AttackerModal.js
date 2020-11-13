@@ -114,7 +114,7 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 null
               }
             </Form.Row>
-            {planAttacker ? 
+            {planAttacker && !newAttacker ? 
               <Form.Row>
                 <Form.Group as={Col} controlId="message">
                   <Form.Label>Attack message</Form.Label>
