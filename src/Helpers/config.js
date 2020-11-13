@@ -1,4 +1,5 @@
 export const config = {
     accountAPI: 'https://travianapi.vdstuff.com/api/Account/',
-    templateAPI: 'https://travianapi.vdstuff.com/api/Template/'
+    templateAPI: 'https://travianapi.vdstuff.com/api/Template/',
+    planAPI: 'https://travianapi.vdstuff.com/api/Plan/'
 };
