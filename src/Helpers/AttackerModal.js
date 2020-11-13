@@ -3,7 +3,7 @@ import { Modal, Button, Form, Col } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, name, data, isLoading, newAttacker, deleteAttacker }) => {
+export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, name, data, isLoading, newAttacker, deleteAttacker, planAttacker, message }) => {
   return (
     show ?
       <Modal show={show} onHide={handleClose}>
@@ -27,11 +27,11 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
             <Form.Row>
               <Form.Group as={Col} controlId="xCoord">
                 <Form.Label>X coordinate</Form.Label>
-                <Form.Control type="text" name="xCoord" value={data.xCoord} required onChange={newAttacker ? handleChange : () => { }} />
+                <Form.Control type="text" name="xCoord" value={data.xCoord} required onChange={newAttacker || planAttacker ? handleChange : () => { }} />
               </Form.Group>
               <Form.Group as={Col} controlId="yCoord">
                 <Form.Label>Y Coordinate</Form.Label>
-                <Form.Control type="text" name="yCoord" value={data.yCoord} required onChange={newAttacker ? handleChange : () => { }} />
+                <Form.Control type="text" name="yCoord" value={data.yCoord} required onChange={newAttacker || planAttacker ? handleChange : () => { }} />
               </Form.Group>
             </Form.Row>
             <Form.Row>
@@ -98,12 +98,15 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 </Form.Control>
               </Form.Group>
             </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="notBeforeTime">
-                <Form.Label>Not before time</Form.Label>
-                <Form.Control type="text" name="notBeforeTime" value={data.notBeforeTime} onChange={handleChange} />
-              </Form.Group>
-            </Form.Row>
+            {!planAttacker ? 
+              <Form.Row>
+                <Form.Group as={Col} controlId="notBeforeTime">
+                  <Form.Label>Not before time</Form.Label>
+                  <Form.Control type="text" name="notBeforeTime" value={data.notBeforeTime} onChange={handleChange} />
+                </Form.Group>
+              </Form.Row>
+              : null
+            }
             <Form.Row className="justifyCenter">
               {!newAttacker ?
                 <FontAwesomeIcon icon={faTrashAlt} className="trash" onClick={() => deleteAttacker(data)} />
@@ -111,6 +114,16 @@ export const AttackerModal = ({ show, handleClose, handleChange, submitHandler, 
                 null
               }
             </Form.Row>
+            {planAttacker ? 
+              <Form.Row>
+                <Form.Group as={Col} controlId="message">
+                  <Form.Label>Attack message</Form.Label>
+                  <Form.Control as="textarea" rows={5} name="message" value={message} onChange={() => { }} />
+                </Form.Group>
+              </Form.Row>
+            :
+              null
+            }
             <hr />
             <Form.Row className="justifyCenter">
               <Button variant="secondary" onClick={handleClose}>

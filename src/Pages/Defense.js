@@ -18,10 +18,10 @@ export const Defense = () => {
                             <div className="header-title">
                                 <h3>
                                     <FontAwesomeIcon icon={faBookOpen}/> 
-                                    &nbsp; Attack & Defense planner
+                                    &nbsp; Defense planner
                                 </h3>
                                 <small>
-                                    Travian
+                                    Travian defense planner
                                 </small>
                             </div>
                         </div>

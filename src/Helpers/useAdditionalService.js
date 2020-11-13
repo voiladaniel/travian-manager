@@ -1,32 +1,27 @@
 import {useState} from "react";
 import axios from "axios";
 
-export function useUserService (url, body){
+export function useAdditionalService (url, body){
     
-    const [errorLogin, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [errorAdditional, setError] = useState(null);
+    const [isAdditionalLoading, setIsAdditionalLoading] = useState(false);
+    const [additional, setAdditional] = useState([]);
 
-    const login = async () => {
-        let authorized = false;
-            if(!isLoading) {
-                setIsLoading(true);
+    const getAdditionalData = async (method) => {
+            if(!isAdditionalLoading) {
+                setIsAdditionalLoading(true);
                 try {
                     const options = {
-                        method: 'POST',
-                        headers: { 'content-type': 'application/json' },
-                        data: body,
-                        url: url + "Login"
+                        method: 'GET',
+                        headers: { "Content-Type": "application/json" },
+                        params: body,
+                        url: url + method
                     }
                     await axios(options)
                     .then(function (response) {
-                        authorized = true;
+                        setAdditional(response.data);
                         setError(null);
-                        setIsLoading(false);
-                        localStorage.setItem('userID', response.data.id);
-                        localStorage.setItem('isAuthenticated', true);
-                        let d = new Date();
-                        d.setMinutes(d.getMinutes() + 10);
-                        localStorage.setItem('expireDate', d);
+                        setIsAdditionalLoading(false);
                     })
                     .catch(function(error) {
                         if (!error.status) {
@@ -37,11 +32,11 @@ export function useUserService (url, body){
                             }
                             catch{
                                 setError(error);
-                                setIsLoading(false);
+                                setIsAdditionalLoading(false);
                             }
                             finally{
                                 setError(error);
-                                setIsLoading(false);
+                                setIsAdditionalLoading(false);
                             }
                         }
                         else{
@@ -51,12 +46,11 @@ export function useUserService (url, body){
                     
                 } catch (e) {
                     setError(e);
-                    setIsLoading(false);
+                    setIsAdditionalLoading(false);
                     console.log(e);
                 }
             }
-            return authorized;
     };
 
-    return {  errorLogin, isLoading, login };
+    return {  errorAdditional, isAdditionalLoading, getAdditionalData, additional, setAdditional };
 }

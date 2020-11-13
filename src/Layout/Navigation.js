@@ -51,14 +51,14 @@ export const Navigation = (props) =>{
                             </NavText>
                         </NavItem> */}
                     </NavItem>
-                    {/* <NavItem eventKey="Attack">
+                    <NavItem eventKey="Attack">
                         <NavIcon>
                             <FontAwesomeIcon icon={faBolt}/>
                         </NavIcon>
                         <NavText>
                             Attack
                         </NavText>
-                    </NavItem> */}
+                    </NavItem> 
                     <NavItem eventKey="Accounts">
                         <NavIcon>
                             <FontAwesomeIcon icon={faShieldAlt}/>

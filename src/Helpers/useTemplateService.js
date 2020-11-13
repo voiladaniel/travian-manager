@@ -52,5 +52,5 @@ export function useTemplateService (url, body){
             }
     };
 
-    return {  errorLogin, isLoading, getData, attackers };
+    return {  errorLogin, isLoading, getData, attackers, setAttackers };
 }

@@ -668,10 +668,6 @@ export const EditDefenseTemplate = props => {
     }
     //#endregion
 
-    //link parmeters
-    const { computedMatch } = props;
-    let { id } = computedMatch.params;
-
     //API Parameters
     const { errorLogin, isLoading, getData, attackers } = useTemplateService(config.templateAPI, atteckersParam);
 

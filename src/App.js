@@ -6,6 +6,7 @@ import { PrivateRoute } from './Layout/PrivateRoute.js'
 import { Home } from './Pages/Home.js'
 import { Defense } from './Pages/Defense.js'
 import { EditDefenseTemplate } from './Pages/Defense/EditDefenseTemplate.js'
+import { EditAttackPlan} from './Pages/Attack/EditAttackPlan.js'
 import { Attack } from './Pages/Attack.js'
 import { Accounts } from './Pages/Accounts.js'
 import { Login } from './Pages/Login.js'
@@ -32,6 +33,7 @@ function App() {
             <PrivateRoute exact path={'/Attack'} component={ Attack }/>
             <PrivateRoute exact path={'/Accounts'} component={ Accounts }/>
             <PrivateRoute exact path="/Defense/:id" component={ EditDefenseTemplate }/>
+            <PrivateRoute exact path="/Attack/:id" component={ EditAttackPlan }/>
             <Route path={'/login'} component={ Login } />
             <PrivateRoute path={'*'} component={ Home } />
           </Switch>

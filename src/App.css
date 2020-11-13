@@ -245,6 +245,21 @@ th:last-child {
 .font10{
   font-size: 12px;
 }
+.customIconPlanAttacker{
+  width: 55px !important;
+}
+.heightOverflow{
+  height: 780px !important;
+}
+.padding10{
+  padding: 10px;
+}
+.margin10{
+  margin-bottom: 10px;
+}
+.padding0{
+  padding: 0px !important;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
