@@ -11,6 +11,7 @@ import img_attacker from '../../Images/img_attacker.png'
 import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret, faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { TargetModal } from '../../Helpers/TargetModal.js'
 import { Target } from '../../Helpers/Target.js'
+import { TargetTemplate } from '../../Helpers/TargetTemplate.js'
 import { PlanAttacker } from '../../Helpers/PlanAttacker.js'
 import { AttackerModal } from '../../Helpers/AttackerModal.js'
 import { ArrivalTimeModal } from '../../Helpers/ArrivalTimeModal.js'
@@ -39,6 +40,7 @@ export const EditAttackPlan = () => {
     const [isLoadingPlanSettings, setIsLoadingPlanSettings] = useState(false);
     const [isLoadingPlanSettingsModal, setIsLoadingPlanSettingsModal] = useState(false);
     const [isShowingPlanSettingsModal, setIsShowingPlanSettingsModal] = useState(false);
+    const [isEditAttack, setIsEditAttack] = useState(false);
 
     const [planDataParam, setPlanDataParam] = useState({
         PlanID: id
@@ -90,7 +92,8 @@ export const EditAttackPlan = () => {
         targetName: "",
         arrivalTime: "",
         attackingTime: "",
-        attackType: ""
+        attackType: "",
+        planDefenderID: 0
     });
 
     const [message, setMessage] = useState("");
@@ -226,7 +229,9 @@ export const EditAttackPlan = () => {
                     PlanAttackerID: attackerData.planAttackerID,
                     TargetID: targetData.targetID,
                     Name: attackerData.name,
-                    ArrivingTime: defenderData.arrivalTime
+                    ArrivingTime: defenderData.arrivalTime,
+                    PlanDefenderID: defenderData.planDefenderID,
+                    AttackType: defenderData.attackType
                 },
                 url: url + method
             }
@@ -235,15 +240,34 @@ export const EditAttackPlan = () => {
                     setIsLoadingTimeArrivalModal(false);
                     setIsShowingTimeArrivalModal(false);
                     
-                    let myTargetId = response.data.targetID;
-                    var myData = [...attackers];
+                    if(targetData.targetID != -1){
+                        var myData = [...attackers];
+                        let myTargetId = response.data.targetID;
 
-                    var planDefenders = myData
-                    .find(attacker => attacker.targetID === myTargetId)
-                    .planDefender;
-                    planDefenders.push(response.data);
+                        if (defenderData.planDefenderID === 0){
+                            var planDefenders = myData
+                                .find(attacker => attacker.targetID === myTargetId)
+                                .planDefender;
+                                planDefenders.push(response.data);
+                            setAttackers(myData);
+                        }
+                        else{
+                            let planDefenderID = response.data.planDefenderID;
 
-                    setAttackers(myData);
+                            var planDefender = myData
+                            .find(attacker => attacker.targetID === myTargetId)
+                            .planDefender.find(defender => defender.planDefenderID === planDefenderID);
+
+                            planDefender.arrivingTime = response.data.arrivingTime;
+                            planDefender.attackingTime = response.data.attackingTime;
+
+                            setAttackers(myData);
+                        }
+                    }
+                    else{
+                        setAttackers(response.data);
+                    }
+
                 })
                 .catch(function (error) {
                     if (!error.status) {
@@ -580,14 +604,24 @@ export const EditAttackPlan = () => {
             speedArtifact: speedArtifact
         }))
         var myData = [...attackers];
+        var planD = planData.message;
         var newRow = "\n";
         var atackMessage = "";
+        var hourTTA ="";
+        var hourTTL ="";
+        var hours = [];
         var planDefenders = myData.map((target, index) => { 
             try{
                 var leng = target.planDefender.length;
                 for (var i = 0; i < leng; i++) {
                     let attack = target.planDefender.find(defender => defender.planAttackerID === planAttackerID);
-                    atackMessage += "[x|y]" + attack.account.xCoord + "|" + attack.account.yCoord + "[/x|y]" + newRow;
+
+                    var newobj = {};
+                    newobj.xCoord = attack.account.xCoord;
+                    newobj.yCoord = attack.account.yCoord;
+                    newobj.arrivingTime = attack.arrivingTime;
+                    newobj.attackingTime = attack.attackingTime;
+                    hours.push(newobj)
                 }
             } 
             //no data
@@ -595,14 +629,27 @@ export const EditAttackPlan = () => {
 
             }
          });
+        hours.sort((a, b) => a.arrivingTime.localeCompare(b.arrivingTime));
+        hours.map((attack, index) =>{
+                                
+            if(planD.includes("#hourTTA")){
+                hourTTA = " -> Time to arrive:" + attack.arrivingTime;
+            }
+            if(planD.includes("#hourTTL")){
+                hourTTL = " -> Time to leave:" + attack.attackingTime;
+            }
 
-         var planD = planData.message;
-         planD = planD.replace('#name',name);
+            atackMessage += "[x|y]" + attack.xCoord + "|" + attack.yCoord + "[/x|y]" + hourTTA + hourTTL + newRow;
+        }) 
+        planD = planD.replace('#name',name);
+        planD = planD.replace('#hourTTA',"");
+        planD = planD.replace('#hourTTL',"");
         setMessage(planD.replace('#attacks',atackMessage));
         setIsShowingAttackerModal(true);
     }
 
     const openTimeArrivalModal = (e, targetID, targetName) => {
+        setIsEditAttack(false);
         const { troopSpeed, tournamentSquare, planAttackerID, speedArtifact } = e;
         const { name, xCoord, yCoord, accountID } = e.account;
         setAttackerData(prev => ({
@@ -627,7 +674,44 @@ export const EditAttackPlan = () => {
             targetName: targetName, 
             arrivalTime: "",
             attackingTime: "",
-            attackType: ""
+            attackType: false,
+            planDefenderID: 0
+        }));
+
+        setIsShowingTimeArrivalModal(true);
+    }
+
+    const openEditTimeArrivalModal = (e) => {
+
+        setIsEditAttack(true);
+        const { troopSpeed, tournamentSquare, planAttackerID, speedArtifact } = e.planAttacker;
+        const { targetID, arrivingTime, planDefenderID } = e;
+        const targetName = e.account.name;
+        const { name, xCoord, yCoord, accountID } = e.planAttacker.account;
+        setAttackerData(prev => ({
+            ...prev,
+            xCoord: xCoord,
+            yCoord: yCoord,
+            name: name,
+            accountID: accountID,
+            troopSpeed: troopSpeed,
+            tournamentSquare: tournamentSquare,
+            planAttackerID: planAttackerID,
+            speedArtifact: speedArtifact
+        }));
+        setTargetData(prev => ({
+            ...prev,
+            targetID: targetID
+        }));
+
+        setDefenderData(prev => ({
+            ...prev,
+            attckerName: name,
+            targetName: targetName, 
+            arrivalTime: arrivingTime,
+            attackingTime: "",
+            attackType: true,
+            planDefenderID: planDefenderID
         }));
 
         setIsShowingTimeArrivalModal(true);
@@ -705,6 +789,15 @@ export const EditAttackPlan = () => {
         }));
     };
     
+    const handleChangeArrivalModalcheckbox = (e) => {
+        const { name, checked } = e.target;
+
+        setDefenderData(prevState => ({
+            ...prevState,
+            [name]: checked
+        }));
+    };
+
     const handleSubmitNewAttack = async (e) => {
         e.preventDefault();
         AddOrUpdateAttackPlan(config.planAPI, "AddOrUpdateAttackPlan");
@@ -824,8 +917,10 @@ export const EditAttackPlan = () => {
                     handleClose={closeTimeArrivalModal}
                     submitHandler={handleSubmitNewAttack}
                     handleChange={handleChangeArrivalModal}
+                    handleChangeArrivalModalcheckbox={handleChangeArrivalModalcheckbox}
                     isLoading={isLoadingTimeArrivalModal}
                     data={defenderData}
+                    editData={isEditAttack}
                     />
                     <PlanSettingsModal show={isShowingPlanSettingsModal}
                     data={planSettingsData}
@@ -838,9 +933,7 @@ export const EditAttackPlan = () => {
                         <div className='col-lg-2'>
                             <div className="row">
                             <h3>Attack Plan: {!isLoadingPlanData ?
-                                    <>
-                                        {planData.name}
-                                    </>
+                                    <TargetTemplate planData={planData}/>
                                     :   <span className="font10">
                                             <span>Loading data... </span><img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                                         </span>
@@ -885,7 +978,7 @@ export const EditAttackPlan = () => {
                                 {console.log(attackers)}
                                 {attackers.length?
                                     attackers.map(item => (
-                                        <Target item={item} openTargetModal={openTargetModal} deleteDefender={deletePlanDefender}  isLoadingCustom={isLoadingCustom}/>
+                                        <Target item={item} openTargetModal={openTargetModal} deleteDefender={deletePlanDefender}  isLoadingCustom={isLoadingCustom} editAttack={openEditTimeArrivalModal}/>
                                     )) : !attackers.length && !isLoading ? 
                                         <div>
                                             No Data!

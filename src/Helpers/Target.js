@@ -7,7 +7,7 @@ import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret, faGlobe } from
 import { Button } from 'react-bootstrap'
 import { PlanDefenderDiv } from '../Helpers/PlanDefenderDiv.js'
 
-export const Target = ({item, openTargetModal, deleteDefender, isLoadingCustom}) => {
+export const Target = ({item, openTargetModal, deleteDefender, isLoadingCustom, editAttack}) => {
     const [{ canDrop, isOver }, drop] = useDrop({
         accept: ItemTypes.PlanAttacker,
         drop: () => ({ name: item.account.name, targetID: item.targetID }),
@@ -23,7 +23,7 @@ export const Target = ({item, openTargetModal, deleteDefender, isLoadingCustom})
             <img src={img_defender} className="w3-bar-item w3-circle w3-hide-small customIconAttacker"/> {item.account.name}
             </div>
             <div className="text-center defenders-div">
-                <PlanDefenderDiv item={item} deleteDefender={deleteDefender} isLoadingCustom={isLoadingCustom}/>
+                <PlanDefenderDiv item={item} deleteDefender={deleteDefender} isLoadingCustom={isLoadingCustom} editAttack={editAttack}/>
                 <div>
 
                 </div>

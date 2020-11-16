@@ -2,14 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
-export const PlanCalculateAttacks = ({ defenders, deleteDefender }) => {
+export const PlanCalculateAttacks = ({ defenders, deleteDefender, editAttack }) => {
     return (
         <>
             {defenders.planDefender.length ?
                 defenders.planDefender
                 .sort((a, b) => a.attackingTime > b.attackingTime)
                 .map(planDefender => (
-                    <tr key={planDefender.planDefenderID}>
+                    <tr key={planDefender.planDefenderID} className="use-pointer" onClick={() => editAttack(planDefender)}>
                         <td>
                             {planDefender.planAttacker.account.name} &nbsp;
                         </td>

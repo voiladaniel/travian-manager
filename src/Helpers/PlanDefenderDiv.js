@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlanCalculateAttacks } from './PlanCalculateAttacks.js'
 
-export const PlanDefenderDiv = ({ item, isLoadingCustom, deleteDefender }) => {
+export const PlanDefenderDiv = ({ item, isLoadingCustom, deleteDefender, editAttack }) => {
     return (
         <div className="row defenders-div-table">
             {item.planDefender.length ?
@@ -23,7 +23,7 @@ export const PlanDefenderDiv = ({ item, isLoadingCustom, deleteDefender }) => {
 
                         <tbody>
                             {
-                                <PlanCalculateAttacks defenders={item} deleteDefender={deleteDefender} />
+                                <PlanCalculateAttacks defenders={item} deleteDefender={deleteDefender} editAttack={editAttack}/>
                             }
                         </tbody>
                     </table>

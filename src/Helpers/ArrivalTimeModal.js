@@ -1,12 +1,16 @@
 import React from 'react'
 import { Modal, Button, Form, Col } from 'react-bootstrap'
 
-export const ArrivalTimeModal = ({ show, handleClose, handleChange, submitHandler, data, isLoading }) => {
+export const ArrivalTimeModal = ({ show, handleClose, handleChange, handleChangeArrivalModalcheckbox, submitHandler, data, isLoading, editData }) => {
   return (
     show ?
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Attack details</Modal.Title>
+          <Modal.Title>
+          {
+            editData ? <>Edit Attack</>
+            : <>Attack details</>
+          }</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form onSubmit={submitHandler}>
@@ -20,6 +24,9 @@ export const ArrivalTimeModal = ({ show, handleClose, handleChange, submitHandle
                   <Form.Label className="highlight-attacker">Target name: {data.targetName}</Form.Label>
                 </Form.Group>
               </Form.Row>
+              <Form.Group controlId="attackType" hidden>
+                  <Form.Check type="checkbox" name="attackType" label="Real?" checked={data.attackType} onChange={handleChangeArrivalModalcheckbox}/>
+              </Form.Group>
               <Form.Row>
                 <Form.Group as={Col} controlId="arrivalTime">
                   <Form.Label>Planned time to arrive:</Form.Label>
@@ -33,7 +40,10 @@ export const ArrivalTimeModal = ({ show, handleClose, handleChange, submitHandle
                 </Button>
                 &nbsp;
                 <Button variant="primary" type="submit" disabled={isLoading}>
-                  Add
+                {
+                  editData ? <>Update</>
+                  : <>Add</>
+                }
                 </Button>
               </Form.Row>
               {isLoading &&
