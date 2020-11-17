@@ -11,6 +11,16 @@ export const PlanSettingsModal = ({ show, handleClose, handleChange, submitHandl
         <Modal.Body>
           {!isLoadingSettings ?
             <Form onSubmit={submitHandler}>
+            <Form.Row>
+              <Form.Group as={Col} controlId="serverSpeed">
+                <Form.Label>Server speed </Form.Label>
+                <Form.Control as="select" value={data.serverSpeed} name="serverSpeed" onChange={handleChange} >
+                  <option value="1">1x</option>
+                  <option value="2">2x</option>
+                  <option value="3">3x</option>
+                </Form.Control>
+              </Form.Group>
+            </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} controlId="timeBuffer">
                   <Form.Label>Time buffer (seconds)</Form.Label>

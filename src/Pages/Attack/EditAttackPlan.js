@@ -57,7 +57,8 @@ export const EditAttackPlan = () => {
         fakeMessage: "",
         realMessage: "",
         ttaMessage: "",
-        ttlMessage: ""
+        ttlMessage: "",
+        serverSpeed: 0
     });
 
     const [targetParam, setTargetParam] = useState({
@@ -490,7 +491,8 @@ export const EditAttackPlan = () => {
                         fakeMessage: response.data.fakeMessage,
                         realMessage: response.data.realMessage,
                         ttaMessage: response.data.ttaMessage,
-                        ttlMessage: response.data.ttlMessage 
+                        ttlMessage: response.data.ttlMessage,
+                        serverSpeed: response.data.serverSpeed 
                     })
                 })
                 .catch(function (error) {
@@ -535,7 +537,8 @@ export const EditAttackPlan = () => {
                     FakeMessage: planSettingsData.fakeMessage,
                     RealMessage: planSettingsData.realMessage,
                     TTAMessage: planSettingsData.ttaMessage,
-                    TTLMessage: planSettingsData.ttlMessage 
+                    TTLMessage: planSettingsData.ttlMessage,
+                    ServerSpeed: parseInt(planSettingsData.serverSpeed)
                 },
                 url: url + method
             }
