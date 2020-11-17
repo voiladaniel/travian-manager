@@ -29,6 +29,10 @@ html, body, #root {
   background: #28a745;
   border-radius: 5px;
 }
+.Conflict{
+  background: #ffa500;
+  border-radius: 5px;
+}
 .App-header {
   background-color: #2f323b;
   min-height: 10vh;

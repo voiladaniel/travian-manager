@@ -9,14 +9,19 @@ export const PlanCalculateAttacks = ({ defenders, deleteDefender, editAttack }) 
                 defenders.planDefender
                 .sort((a, b) => a.attackingTime > b.attackingTime)
                 .map(planDefender => (
-                    <tr key={planDefender.planDefenderID} className="use-pointer" onClick={() => editAttack(planDefender)}>
-                        <td>
+                    <tr key={planDefender.planDefenderID} className="use-pointer">
+                        <td onClick={() => editAttack(planDefender)}>
                             {planDefender.planAttacker.account.name} &nbsp;
                         </td>
-                        <td className={planDefender.attackType === 1 ? "Real" : "Fake"}>
+                        <td className={
+                                planDefender.attackerConflict === 0 ?
+                                planDefender.attackType === 1 ? "Fake" : "Real" : "Conflict"
+                            } 
+                            onClick={() => editAttack(planDefender)}
+                            >
                             {planDefender.attackingTime}
                         </td>
-                        <td>
+                        <td onClick={() => editAttack(planDefender)}>
                             {planDefender.arrivingTime}
                         </td>
                         <td>

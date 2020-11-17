@@ -50,7 +50,14 @@ export const EditAttackPlan = () => {
         planID: planDataParam.PlanID,
         planSettingID: 0,
         timeBuffer: "",
-        message:""
+        safeTime: 0,
+        message:"",
+        includeTTA: 0,
+        includeTTL: 0,
+        fakeMessage: "",
+        realMessage: "",
+        ttaMessage: "",
+        ttlMessage: ""
     });
 
     const [targetParam, setTargetParam] = useState({
@@ -152,13 +159,14 @@ export const EditAttackPlan = () => {
                 headers: { "Content-Type": "application/json" },
                 params: {
                     PlanDefenderID: planDefenderID,
-                    PlanAttackerID: planAttackerID
+                    PlanAttackerID: planAttackerID,
+                    PlanID: planDataParam.PlanID
                 },
                 url: url + method
             }
             axios(options)
                 .then(function (response) {
-                    
+                    setAttackers(response.data);
                 })
                 .catch(function (error) {
                     if (!error.status) {
@@ -242,27 +250,30 @@ export const EditAttackPlan = () => {
                     
                     if(targetData.targetID != -1){
                         var myData = [...attackers];
-                        let myTargetId = response.data.targetID;
+                        setAttackers(response.data);
 
-                        if (defenderData.planDefenderID === 0){
-                            var planDefenders = myData
-                                .find(attacker => attacker.targetID === myTargetId)
-                                .planDefender;
-                                planDefenders.push(response.data);
-                            setAttackers(myData);
-                        }
-                        else{
-                            let planDefenderID = response.data.planDefenderID;
+                        // if (defenderData.planDefenderID === 0){
+                        //     var planDefenders = myData
+                        //         .find(attacker => attacker.targetID === myTargetId)
+                        //         .planDefender;
+                        //     planDefenders.push(response.data);
+                            
+                        //     setAttackers(myData);
+                        // }
+                        // else{
+                        //     let planDefenderID = response.data.planDefenderID;
 
-                            var planDefender = myData
-                            .find(attacker => attacker.targetID === myTargetId)
-                            .planDefender.find(defender => defender.planDefenderID === planDefenderID);
+                        //     var planDefender = myData
+                        //     .find(attacker => attacker.targetID === myTargetId)
+                        //     .planDefender.find(defender => defender.planDefenderID === planDefenderID);
 
-                            planDefender.arrivingTime = response.data.arrivingTime;
-                            planDefender.attackingTime = response.data.attackingTime;
+                        //     planDefender.attackType = response.data.attackType;
+                        //     planDefender.arrivingTime = response.data.arrivingTime;
+                        //     planDefender.attackingTime = response.data.attackingTime;
+                        //     planDefender.attackerConflict = response.data.attackerConflict;
 
-                            setAttackers(myData);
-                        }
+                        //     setAttackers(myData);
+                        // }
                     }
                     else{
                         setAttackers(response.data);
@@ -472,7 +483,14 @@ export const EditAttackPlan = () => {
                     setPlanSettingsData({
                         planSettingID: response.data.planSettingID,
                         timeBuffer: response.data.timeBuffer,
-                        message: response.data.message 
+                        safeTime: response.data.safeTime,
+                        message: response.data.message,
+                        includeTTA: response.data.includeTTA,
+                        includeTTL: response.data.includeTTL,
+                        fakeMessage: response.data.fakeMessage,
+                        realMessage: response.data.realMessage,
+                        ttaMessage: response.data.ttaMessage,
+                        ttlMessage: response.data.ttlMessage 
                     })
                 })
                 .catch(function (error) {
@@ -500,14 +518,24 @@ export const EditAttackPlan = () => {
     const updatePlanSettings = (url, method) => {
         setIsLoadingPlanSettingsModal(true);
         try {
+            planSettingsData.includeTTA = planSettingsData.includeTTA ? 1 : 0;
+            planSettingsData.includeTTL = planSettingsData.includeTTL ? 1 : 0;
+            
             const options = {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 data: {
                     PlanID: planDataParam.PlanID,
                     TimeBuffer: planSettingsData.timeBuffer,
+                    SafeTime: planSettingsData.safeTime,
                     PlanSettingID: planSettingsData.planSettingID,
-                    Message: planSettingsData.message
+                    Message: planSettingsData.message,
+                    IncludeTTA: planSettingsData.includeTTA,
+                    IncludeTTL: planSettingsData.includeTTL,
+                    FakeMessage: planSettingsData.fakeMessage,
+                    RealMessage: planSettingsData.realMessage,
+                    TTAMessage: planSettingsData.ttaMessage,
+                    TTLMessage: planSettingsData.ttlMessage 
                 },
                 url: url + method
             }
@@ -515,9 +543,16 @@ export const EditAttackPlan = () => {
                 .then(function (response) {
                     setIsLoadingPlanSettingsModal(false);
                     setIsShowingPlanSettingsModal(false);
-                    setPlanData({
-                        message: planSettingsData.message
-                    })
+                    setPlanData(prev => ({
+                        ...prev,
+                        message: planSettingsData.message,
+                        includeTTA: planSettingsData.includeTTA,
+                        includeTTL: planSettingsData.includeTTL,
+                        fakeMessage: planSettingsData.fakeMessage,
+                        realMessage: planSettingsData.realMessage,
+                        ttaMessage: planSettingsData.ttaMessage,
+                        ttlMessage: planSettingsData.ttlMessage 
+                    }));
                     setAttackers(response.data)
                 })
                 .catch(function (error) {
@@ -621,6 +656,7 @@ export const EditAttackPlan = () => {
                     newobj.yCoord = attack.account.yCoord;
                     newobj.arrivingTime = attack.arrivingTime;
                     newobj.attackingTime = attack.attackingTime;
+                    newobj.attackType = attack.attackType;
                     hours.push(newobj)
                 }
             } 
@@ -632,14 +668,18 @@ export const EditAttackPlan = () => {
         hours.sort((a, b) => a.arrivingTime.localeCompare(b.arrivingTime));
         hours.map((attack, index) =>{
                                 
-            if(planD.includes("#hourTTA")){
-                hourTTA = " -> Time to arrive:" + attack.arrivingTime;
+            if(planData.includeTTA === 1){
+                hourTTA = " " + planData.ttaMessage + " " + attack.arrivingTime;
             }
-            if(planD.includes("#hourTTL")){
-                hourTTL = " -> Time to leave:" + attack.attackingTime;
+            if(planData.includeTTL === 1){
+                hourTTL = " " + planData.ttlMessage + " " + attack.attackingTime;
             }
-
-            atackMessage += "[x|y]" + attack.xCoord + "|" + attack.yCoord + "[/x|y]" + hourTTA + hourTTL + newRow;
+            var realAttack = " " + planData.fakeMessage;
+            if(attack.attackType === 1){
+                realAttack = " " + planData.realMessage;
+            }
+            
+            atackMessage += "[x|y]" + attack.xCoord + "|" + attack.yCoord + "[/x|y]" + hourTTA + hourTTL + realAttack + newRow;
         }) 
         planD = planD.replace('#name',name);
         planD = planD.replace('#hourTTA',"");
@@ -685,7 +725,7 @@ export const EditAttackPlan = () => {
 
         setIsEditAttack(true);
         const { troopSpeed, tournamentSquare, planAttackerID, speedArtifact } = e.planAttacker;
-        const { targetID, arrivingTime, planDefenderID } = e;
+        const { targetID, arrivingTime, planDefenderID, attackType } = e;
         const targetName = e.account.name;
         const { name, xCoord, yCoord, accountID } = e.planAttacker.account;
         setAttackerData(prev => ({
@@ -710,7 +750,7 @@ export const EditAttackPlan = () => {
             targetName: targetName, 
             arrivalTime: arrivingTime,
             attackingTime: "",
-            attackType: true,
+            attackType: attackType,
             planDefenderID: planDefenderID
         }));
 
@@ -749,6 +789,7 @@ export const EditAttackPlan = () => {
     }
 
     const openPlanSettingsModal = (e) => {
+
         getPlanSettings(config.planAPI, "GetPlanSettings");
         setIsShowingPlanSettingsModal(true);
     }
@@ -789,6 +830,15 @@ export const EditAttackPlan = () => {
         }));
     };
     
+    const handleChangeSettingsModalcheckbox = (e) => {
+        const { name, checked } = e.target;
+
+        setPlanSettingsData(prevState => ({
+            ...prevState,
+            [name]: checked
+        }));
+    };
+
     const handleChangeArrivalModalcheckbox = (e) => {
         const { name, checked } = e.target;
 
@@ -928,7 +978,8 @@ export const EditAttackPlan = () => {
                     handleChange={handleChangePlanSettingsModal}
                     submitHandler={handleSubmitPlanSettings}
                     isLoadingSettings={isLoadingPlanSettings}
-                    isLoading={isLoadingPlanSettingsModal} />
+                    isLoading={isLoadingPlanSettingsModal}
+                    handleChangeArrivalModalcheckbox={handleChangeSettingsModalcheckbox} />
                     <div className="row">
                         <div className='col-lg-2'>
                             <div className="row">

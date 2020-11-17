@@ -24,7 +24,7 @@ export const ArrivalTimeModal = ({ show, handleClose, handleChange, handleChange
                   <Form.Label className="highlight-attacker">Target name: {data.targetName}</Form.Label>
                 </Form.Group>
               </Form.Row>
-              <Form.Group controlId="attackType" hidden>
+              <Form.Group controlId="attackType">
                   <Form.Check type="checkbox" name="attackType" label="Real?" checked={data.attackType} onChange={handleChangeArrivalModalcheckbox}/>
               </Form.Group>
               <Form.Row>
