@@ -11,7 +11,7 @@ import img_defender from '../Images/img_defender.png'
 export const Accounts = () => {
     const [defendersParam, setDefendersParam] = useState({
         TemplateId: "1",
-        UserID: "1",
+        UserID: localStorage.getItem('userID'),
         Refresh: 0
     });
     
@@ -93,7 +93,8 @@ export const Accounts = () => {
                         Name: defenderData.realName,
                         XCoord: defenderData.xCoord,
                         YCoord: defenderData.yCoord,
-                        AccountType: 0
+                        AccountType: 0,
+                        UserID: localStorage.getItem('userID')
                     }
                 },
                 url: url + method

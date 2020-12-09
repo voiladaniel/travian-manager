@@ -22,12 +22,12 @@ export const EditDefenseTemplate = props => {
 
     const [atteckersParam, setAtteckersParam] = useState({
         TemplateId: planDataParam.TemplateID,
-        UserID: "1",
+        UserID: localStorage.getItem('userID'),
         Refresh: 0
     });
     const [defendersParam, setDefendersParam] = useState({
         TemplateId: planDataParam.TemplateID,
-        UserID: "1"
+        UserID: localStorage.getItem('userID')
     });
     const [defenderBody, setDefenderBody] = useState({
         TemplateId: planDataParam.TemplateID,
