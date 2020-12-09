@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap'
+import { useParams } from 'react-router-dom';
 import { DefenderModal } from '../../Helpers/DefenderModal.js'
 import { AttackerModal } from '../../Helpers/AttackerModal.js'
 import { SettingsModal } from '../../Helpers/SettingsModal.js'
@@ -13,17 +14,23 @@ import img_attacker from '../../Images/img_attacker.png'
 import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
+    let { id } = useParams();
+
+    const [planDataParam, setPlanDataParam] = useState({
+        TemplateID: id
+    });
+
     const [atteckersParam, setAtteckersParam] = useState({
-        TemplateId: "1",
+        TemplateId: planDataParam.TemplateID,
         UserID: "1",
         Refresh: 0
     });
     const [defendersParam, setDefendersParam] = useState({
-        TemplateId: "1",
+        TemplateId: planDataParam.TemplateID,
         UserID: "1"
     });
     const [defenderBody, setDefenderBody] = useState({
-        TemplateId: 1,
+        TemplateId: planDataParam.TemplateID,
         AttackerID: 0,
         AccountID: 0,
         ArrivingTime: ""
@@ -65,7 +72,7 @@ export const EditDefenseTemplate = props => {
                 method: 'GET',
                 headers: { "Content-Type": "application/json" },
                 params: {
-                    TemplateID: 1,
+                    TemplateID: planDataParam.TemplateID,
                 },
                 url: url + method
             }
@@ -142,7 +149,7 @@ export const EditDefenseTemplate = props => {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 data: {
-                    TemplateId: 1,
+                    TemplateId: planDataParam.TemplateID,
                     TimeInterval: settingsData.timeInterval,
                     SettingID: settingsData.settingsdID
                 },
@@ -186,7 +193,7 @@ export const EditDefenseTemplate = props => {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 data: {
-                    TemplateId: 1,
+                    TemplateId: planDataParam.TemplateID,
                     TroopSpeed: attackerData.troopSpeed,
                     TournamentSquare: attackerData.tournamentSquare,
                     AttackerID: attackerData.AttackerID,
@@ -239,7 +246,7 @@ export const EditDefenseTemplate = props => {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 data: {
-                    TemplateId: 1,
+                    TemplateId: planDataParam.TemplateID,
                     ArrivingTime: defenderData.arrivalTime,
                     AttackerID: attackerData.AttackerID,
                     AccountID: defenderData.name,
@@ -247,6 +254,7 @@ export const EditDefenseTemplate = props => {
                         Name: defenderData.realName,
                         XCoord: defenderData.xCoord,
                         YCoord: defenderData.yCoord,
+                        UserID: localStorage.getItem('userID'),
                         AccountType: 0
                     }
                 },

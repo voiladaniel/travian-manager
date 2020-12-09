@@ -7,7 +7,11 @@ export const PlanCalculateAttacks = ({ defenders, deleteDefender, editAttack }) 
         <>
             {defenders.planDefender.length ?
                 defenders.planDefender
-                .sort((a, b) => a.attackingTime > b.attackingTime)
+                .sort((a, b) => {
+                    if(a.attackingTime < b.attackingTime) { return -1; }
+                    if(a.attackingTime > b.attackingTime) { return 1; }
+                    return 0;
+                })
                 .map(planDefender => (
                     <tr key={planDefender.planDefenderID} className="use-pointer">
                         <td onClick={() => editAttack(planDefender)}>

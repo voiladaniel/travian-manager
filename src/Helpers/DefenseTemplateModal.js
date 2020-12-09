@@ -1,44 +1,19 @@
 import React from 'react'
 import { Modal, Button, Form, Col } from 'react-bootstrap'
-import TimePicker from 'react-time-picker'
 
-export const ArrivalTimeModal = ({ show, handleClose, handleChange, handleChangeArrivalModalcheckbox, submitHandler, data, isLoading, editData }) => {
+export const DefenseTemplateModal = ({ show, handleClose, handleChange, submitHandler, defenseTemplateData, isLoading, isLoadingSettings }) => {
   return (
     show ?
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>
-          {
-            editData ? <>Edit Attack</>
-            : <>Attack details</>
-          }</Modal.Title>
+          <Modal.Title>New Defense Plan</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form onSubmit={submitHandler}>
               <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label className="highlight-attacker">Attacker name: {data.attckerName}</Form.Label>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label className="highlight-attacker">Target name: {data.targetName}</Form.Label>
-                </Form.Group>
-              </Form.Row>
-              <Form.Group controlId="attackType">
-                  <Form.Check type="checkbox" name="attackType" label="Real?" checked={data.attackType} onChange={handleChangeArrivalModalcheckbox}/>
-              </Form.Group>
-              {/* <Form.Row>
-                <Form.Group as={Col} controlId="arrivalTime">
-                  <Form.Label>Planned time to arrive:</Form.Label>
-                    <TimePicker format="HH:mm:ss" clearIcon={null} clockIcon={null} isOpen={false} disableClock={true} className="form-control" value="10:00:24"
-                     name="arrivalTime" value={data.arrivalTime} onChange={handleChange} required={true}/> 
-                </Form.Group>
-              </Form.Row> */}
-              <Form.Row>
-                <Form.Group as={Col} controlId="arrivalTime">
-                  <Form.Label>Planned time to arrive:</Form.Label>
-                  <Form.Control type="text" name="arrivalTime" value={data.arrivalTime} onChange={handleChange} required/>
+                <Form.Group as={Col} controlId="name">
+                  <Form.Label>Defense plan name:</Form.Label>
+                  <Form.Control type="text" name="name" value={defenseTemplateData.name} onChange={handleChange} required/>
                 </Form.Group>
               </Form.Row>
               <hr />
@@ -48,10 +23,7 @@ export const ArrivalTimeModal = ({ show, handleClose, handleChange, handleChange
                 </Button>
                 &nbsp;
                 <Button variant="primary" type="submit" disabled={isLoading}>
-                {
-                  editData ? <>Update</>
-                  : <>Add</>
-                }
+                  Save
                 </Button>
               </Form.Row>
               {isLoading &&

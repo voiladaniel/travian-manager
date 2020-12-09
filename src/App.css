@@ -33,6 +33,9 @@ html, body, #root {
   background: #ffa500;
   border-radius: 5px;
 }
+.react-time-picker__wrapper{
+  border: none !important;
+}
 .App-header {
   background-color: #2f323b;
   min-height: 10vh;

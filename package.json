@@ -23,6 +23,7 @@
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "react-time-picker": "^4.0.1",
     "w3-css": "^4.1.0"
   },
   "scripts": {
