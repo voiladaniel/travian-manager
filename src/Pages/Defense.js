@@ -6,6 +6,7 @@ import { config } from '../Helpers/config.js';
 import axios from "axios";
 import { useTemplateService } from '../Helpers/useTemplateService.js'
 import { DefenseTemplateModal } from '../Helpers/DefenseTemplateModal.js'
+import { DeleteModal } from '../Helpers/DeleteModal.js';
 
 export const Defense = () => {
     const history = useHistory();
@@ -19,12 +20,21 @@ export const Defense = () => {
     const [defenseTemplateData, setDefenseTemplateData] = useState({
         name: ""
     });
+    const [deleteData, setDeleteData] = useState({
+        planID: 0,
+        name: ""
+    });
 
     const [isShowingDefenseTemplateModal, setIsShowingDefenseTemplateModal] = useState(false);
     const [isLoadingDefenseTemplateModal, setIsLoadingDefenseTemplateModal] = useState(false);
+    const [isLoadingDeleteModal, setIsLoadingDeleteModal] = useState(false);
+    const [isShowingDeleteModal, setIsShowingDeleteModal] = useState(false);
 
     function closeDefenseTemplateModal() {
         setIsShowingDefenseTemplateModal(!isShowingDefenseTemplateModal);
+    }
+    function closeDeleteModal() {
+        setIsShowingDeleteModal(!isShowingDeleteModal);
     }
 
     const handleChangeDefenseTemplateModal = (e) => {
@@ -39,6 +49,11 @@ export const Defense = () => {
     const handleSubmitDefenseTemplate = async (e) => {
         e.preventDefault();
         addDefensePlan(config.templateAPI, "AddPlan");
+    };
+
+    const handleSubmitDelete = async (e) => {
+        e.preventDefault();
+        deleteDefensePlan(config.templateAPI, "DeletePlan");
     };
 
     const openDefenseTemplateModal = (e) => {
@@ -92,11 +107,64 @@ export const Defense = () => {
         }
     };
 
+    const deleteDefensePlan = (url, method) => {
+        setIsLoadingDeleteModal(true);
+        try {
+            const options = {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                data: {
+                    TemplateID: deleteData.planID
+                },
+                url: url + method
+            }
+            const result = axios(options)
+                .then(function (response) {
+                    setIsShowingDeleteModal(false);
+                    setIsLoadingDeleteModal(false);
+                    var myData = [...attackers];
+                    var plans = myData
+                     .filter(attacker => attacker.templateID != deleteData.planID);
+                    
+                     setAttackers(plans);
+                })
+                .catch(function (error) {
+                    if (!error.status) {
+                        try {
+                            const { status } = error.response;
+                            if (status == 401)
+                                error.message = 'Unauthorized access! Please contact the Administrator!'
+                        }
+                        catch{
+                        }
+                        finally {
+                        }
+                    }
+                    else {
+
+                    }
+                });
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     //API Parameters
     const { errorLogin, isLoading, getData, attackers, setAttackers  } = useTemplateService(config.templateAPI, defensePlansParam);
 
     const goToTemplate = (planID) => {
         history.push('/Defense/' + planID);
+    }
+
+    const goToDelete = (plan) => {
+        setDeleteData(prev => ({
+            ...prev,
+            planID: plan.templateID,
+            name: plan.name
+        }))
+
+        setIsShowingDeleteModal(true);
     }
 
      //load defense plans
@@ -117,6 +185,13 @@ export const Defense = () => {
                  handleChange={handleChangeDefenseTemplateModal}
                  submitHandler={handleSubmitDefenseTemplate}
                  isLoading={isLoadingDefenseTemplateModal}
+                />
+                <DeleteModal
+                 show={isShowingDeleteModal}
+                 handleClose={closeDeleteModal}
+                 data={deleteData}
+                 submitHandler={handleSubmitDelete}
+                 isLoading={isLoadingDeleteModal}
                 />
                 <div className="row">
                     <div className="col-lg-12">
@@ -144,11 +219,15 @@ export const Defense = () => {
               <div className="row">
                 {!isLoading && attackers.length ?
                             attackers.map(item => (
-                                <div className="col-lg-2 col-md-2 text-center custom-div-template  use-pointer"  key={item.templateID}  onClick={() => goToTemplate(item.templateID)}>
-                                    <h2>
-                                        {item.name}
-                                    </h2>
-                                </div>
+                                <div key={item.templateID} className="col-lg-2 col-md-2 text-center custom-div-template  use-pointer">
+                                    <div className="custom-div-div-template" onClick={() => goToTemplate(item.templateID)}>
+                                        <h2>
+                                            {item.name}
+                                        </h2>
+                                    </div>
+                                    <div className ="delete-plan-button" onClick={() => goToDelete(item)}>x</div>
+                                </div>    
+                                
                             )) : !attackers.length && !isLoading ? 
                                 <div>
                                     No Data!

@@ -17,6 +17,17 @@ html, body, #root {
   background: #2f323b;
 }
 
+.delete-plan-button {
+position: absolute;
+top: 5px;
+right: 5px;
+border-radius: 5px;
+border: 10px !important;
+border-color: red !important;
+color: #2f323b;
+background: #ffc107;
+width: 20px;
+}
 .Not-catas{
   background: #FF7256;
   border-radius: 5px;
@@ -75,12 +86,20 @@ html, body, #root {
   border: 1px solid #e3e6e8;
   color: #e3e6e8;
   border-radius: 3px;
-  padding: 9px;
+  padding: 0 !important;
   cursor: pointer;
   min-height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.custom-div-div-template{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  height: 100%;
 }
 .custom-div-template:hover{
   background:#676767;

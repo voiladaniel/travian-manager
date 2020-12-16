@@ -11,7 +11,7 @@ import { DefenderDiv } from '../../Helpers/DefenderDiv.js'
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import img_attacker from '../../Images/img_attacker.png'
-import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
     let { id } = useParams();
