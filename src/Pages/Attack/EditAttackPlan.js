@@ -654,17 +654,17 @@ export const EditAttackPlan = () => {
                 for (var i = 0; i < leng; i++) {
                     if(target.planDefender[i].planAttackerID === planAttackerID)
                     {
-                        var das= 'da'
+                        var newobj = {};
+                        newobj.xCoord = target.planDefender[i].account.xCoord;
+                        newobj.yCoord = target.planDefender[i].account.yCoord;
+                        newobj.arrivingTime = target.planDefender[i].arrivingTime;
+                        newobj.attackingTime = target.planDefender[i].attackingTime;
+                        newobj.attackType = target.planDefender[i].attackType;
+                        hours.push(newobj)
                     }
                     let attack = target.planDefender.find(defender => defender.planAttackerID === planAttackerID);
 
-                    var newobj = {};
-                    newobj.xCoord = attack.account.xCoord;
-                    newobj.yCoord = attack.account.yCoord;
-                    newobj.arrivingTime = attack.arrivingTime;
-                    newobj.attackingTime = attack.attackingTime;
-                    newobj.attackType = attack.attackType;
-                    hours.push(newobj)
+                    
                 }
             } 
             //no data
