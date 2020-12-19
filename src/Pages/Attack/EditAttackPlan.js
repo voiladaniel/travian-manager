@@ -652,6 +652,10 @@ export const EditAttackPlan = () => {
             try{
                 var leng = target.planDefender.length;
                 for (var i = 0; i < leng; i++) {
+                    if(target.planDefender[i].planAttackerID === planAttackerID)
+                    {
+                        var das= 'da'
+                    }
                     let attack = target.planDefender.find(defender => defender.planAttackerID === planAttackerID);
 
                     var newobj = {};
