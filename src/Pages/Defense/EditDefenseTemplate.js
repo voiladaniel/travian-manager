@@ -14,7 +14,7 @@ import img_attacker from '../../Images/img_attacker.png'
 import { faBolt, faWrench, faShieldAlt, faTrashAlt, faUserSecret, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export const EditDefenseTemplate = props => {
-    let { id } = useParams();
+    let { id, templateName } = useParams();
 
     const [planDataParam, setPlanDataParam] = useState({
         TemplateID: id
@@ -751,7 +751,7 @@ export const EditDefenseTemplate = props => {
                     handleChangeSpyTroop={handleChangeSpyTroop} />
 
                 <div className="row">
-                    <h3>Template: ro2020</h3>
+                    <h3>Template: {templateName}</h3>
                 </div>
                 <div className="row">
                     <Button variant="secondary" onClick={openNewAttackerModal} disabled={isLoading}>
