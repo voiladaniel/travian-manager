@@ -32,7 +32,7 @@ function App() {
             <PrivateRoute exact path={'/Defense'} component={ Defense }/>
             <PrivateRoute exact path={'/Attack'} component={ Attack }/>
             <PrivateRoute exact path={'/Accounts'} component={ Accounts }/>
-            <PrivateRoute exact path="/Defense/:id(/:templateName)" component={ EditDefenseTemplate }/>
+            <PrivateRoute exact path="/Defense/:id/:templateName" component={ EditDefenseTemplate }/>
             <PrivateRoute exact path="/Attack/:id" component={ EditAttackPlan }/>
             <Route path={'/login'} component={ Login } />
             <PrivateRoute path={'*'} component={ Home } />
