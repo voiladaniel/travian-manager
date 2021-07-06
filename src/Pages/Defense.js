@@ -153,8 +153,8 @@ export const Defense = () => {
     //API Parameters
     const { errorLogin, isLoading, getData, attackers, setAttackers  } = useTemplateService(config.templateAPI, defensePlansParam);
 
-    const goToTemplate = (planID) => {
-        history.push('/Defense/' + planID);
+    const goToTemplate = (planID, templateName) => {
+        history.push('/Defense/' + planID + '/' + templateName);
     }
 
     const goToDelete = (plan) => {
@@ -220,7 +220,7 @@ export const Defense = () => {
                 {!isLoading && attackers.length ?
                             attackers.map(item => (
                                 <div key={item.templateID} className="col-lg-2 col-md-2 text-center custom-div-template  use-pointer">
-                                    <div className="custom-div-div-template" onClick={() => goToTemplate(item.templateID)}>
+                                    <div className="custom-div-div-template" onClick={() => goToTemplate(item.templateID, item.name)}>
                                         <h2>
                                             {item.name}
                                         </h2>
