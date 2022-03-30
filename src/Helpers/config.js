@@ -1,5 +1,5 @@
 export const config = {
-    accountAPI: 'https://api.tmanager.click/api/Account/',
-    templateAPI: 'https://api.tmanager.click/api/Template/',
-    planAPI: 'https://api.tmanager.click/api/Plan/'
+    accountAPI: 'https://api.t-manager.click/api/Account/',
+    templateAPI: 'https://api.t-manager.click/api/Template/',
+    planAPI: 'https://api.t-manager.click/api/Plan/'
 };
